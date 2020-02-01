@@ -1,0 +1,8 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+find_dependency(LLVM)
+
+if(NOT TARGET autotest::autotest)
+    include(${CMAKE_CURRENT_LIST_DIR}/autotest-targets.cmake)
+endif()
