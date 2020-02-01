@@ -12,7 +12,7 @@ This smart testing process is powered by [LLVM libFuzzer](https://llvm.org/docs/
 
 ## Usage
 
-There is a more elaborate use case within the `example-deque` folder, but the basic usage is the following.
+There is a more elaborate use case within the `example` folder, but the basic usage is the following.
 
 ### Installation
 
