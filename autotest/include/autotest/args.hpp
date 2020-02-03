@@ -15,16 +15,16 @@ T integral(FuzzedDataProvider &state)
 }
 
 template <class T>
-auto integral(T min, T max)
+auto integralRange(T min, T max)
 {
     return [min, max](FuzzedDataProvider &state) {
         return state.ConsumeIntegralInRange(min, max);
     };
 }
 
-auto random_string(size_t max_length);
+auto randomString(size_t max_length);
 
-auto fixed_string(size_t length);
+auto fixedString(size_t length);
 
 template <class T>
 T constant(T t)

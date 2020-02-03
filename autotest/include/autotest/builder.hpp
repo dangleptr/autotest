@@ -19,24 +19,35 @@ struct Builder
     {
     }
 
-    template <class FunT, class... ArgSpecs>
-    Builder &operator()(FunT &&fun, ArgSpecs &&... specs)
+    template <class RetT, class... ParamT, class... ArgSpecs>
+    Builder &operator()(RetT(T::*fun)(ParamT...), ArgSpecs &&... specs)
     {
         engine.addMethod(
             makeMethod(
                 instance,
-                std::forward<FunT>(fun),
+                fun,
                 std::forward<ArgSpecs>(specs)...));
         return *this;
     }
 
     template <class FunT, class... ArgSpecs>
-    Builder &Const(FunT &&fun, ArgSpecs &&... specs)
+    Builder &operator()(FunT fun, ArgSpecs &&... specs)
     {
         engine.addMethod(
-            makeConstMethod(
+            makeMethod(
                 instance,
-                std::forward<FunT>(fun),
+                fun,
+                std::forward<ArgSpecs>(specs)...));
+        return *this;
+    }
+
+    template <class RetT, class... ParamT, class... ArgSpecs>
+    Builder &Const(RetT(T::*fun)(ParamT...) const , ArgSpecs &&... specs)
+    {
+        engine.addMethod(
+            makeMethod(
+                instance,
+                fun,
                 std::forward<ArgSpecs>(specs)...));
         return *this;
     }
