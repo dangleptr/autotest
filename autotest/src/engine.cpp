@@ -42,7 +42,6 @@ int Engine::execute(std::function<bool()> invariant)
 
 Method *Engine::choseMethod()
 {
-
     static bool noChoiceWarning{false};
 
     applicables.clear();
@@ -56,7 +55,8 @@ Method *Engine::choseMethod()
 
     if (applicables.size() && state.remaining_bytes() > 0)
     {
-        return &methods[applicables[choseMethodImpl()]];
+        const std::size_t choice = choseMethodImpl();
+        return &methods[applicables[choice]];
     }
     else
     {

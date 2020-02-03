@@ -13,9 +13,9 @@ template <class T, class FunT, class... ArgSpecs>
 struct MethodCall
 {
 
-    MethodCall(FunT fun, ArgSpecs &&... specs)
-        : _fun(std::forward<FunT>(fun)),
-          _args{std::forward<ArgSpecs>(specs)...}
+    MethodCall(FunT fun, ArgSpecs... specs)
+        : _fun(fun),
+          _args{specs...}
     {
     }
 
@@ -36,11 +36,11 @@ private:
 };
 
 template <class T, class FunT, class... ArgSpecs>
-auto makeCall(FunT &&fun, ArgSpecs &&... specs)
+auto makeCall(FunT fun, ArgSpecs... specs)
 {
     return MethodCall<T, FunT, ArgSpecs...>{
-        std::forward<FunT>(fun),
-        std::forward<ArgSpecs>(specs)...};
+        fun,
+        specs...};
 }
 
 struct Method
@@ -50,12 +50,12 @@ struct Method
 };
 
 template <class T, class FunT, class... ArgSpecs>
-Method makeMethod(T &obj, FunT &&fun, ArgSpecs &&... specs)
+Method makeMethod(T &obj, FunT fun, ArgSpecs... specs)
 {
     return {
         [call = makeCall<T>(
-             std::forward<FunT>(fun),
-             std::forward<ArgSpecs>(specs)...),
+         fun,
+             specs...),
          &obj](FuzzedDataProvider &buffer) {
             call.execute(obj, buffer);
         },
@@ -63,12 +63,12 @@ Method makeMethod(T &obj, FunT &&fun, ArgSpecs &&... specs)
 };
 
 template <class T, class FunT, class... ArgSpecs>
-Method makeConstMethod(T const &obj, FunT &&fun, ArgSpecs &&... specs)
+Method makeConstMethod(T const &obj, FunT fun, ArgSpecs... specs)
 {
     return {
         [call = makeCall<T>(
-             std::forward<FunT>(fun),
-             std::forward<ArgSpecs>(specs)...),
+             fun,
+             specs...),
          &obj](FuzzedDataProvider &buffer) {
             call.execute(obj, buffer);
         },

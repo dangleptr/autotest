@@ -20,13 +20,13 @@ struct Builder
     }
 
     template <class RetT, class... ParamT, class... ArgSpecs>
-    Builder &operator()(RetT(T::*fun)(ParamT...), ArgSpecs &&... specs)
+    Builder &operator()(RetT(T::*fun)(ParamT...), ArgSpecs... specs)
     {
         engine.addMethod(
             makeMethod(
                 instance,
                 fun,
-                std::forward<ArgSpecs>(specs)...));
+                specs...));
         return *this;
     }
 
@@ -37,7 +37,7 @@ struct Builder
             makeMethod(
                 instance,
                 fun,
-                std::forward<ArgSpecs>(specs)...));
+                specs...));
         return *this;
     }
 
@@ -48,7 +48,7 @@ struct Builder
             makeMethod(
                 instance,
                 fun,
-                std::forward<ArgSpecs>(specs)...));
+                specs...));
         return *this;
     }
 
@@ -56,18 +56,18 @@ struct Builder
     Builder &If(Pred &&pred)
     {
         engine.addCondition(
-            [obj = instance, f = std::move(pred)] {
+            [&obj = instance, f = std::move(pred)] {
                 return f(obj);
             });
         return *this;
     }
 
     template <class Invariant>
-    int execute(Invariant &&invariant)
+    int execute(Invariant invariant)
     {
         return engine.execute(
-            [this, f = std::forward<Invariant>(invariant)] {
-                return f(static_cast<const T&>(instance));
+            [this, invariant] {
+                return invariant(static_cast<const T&>(instance));
             });
     }
 
