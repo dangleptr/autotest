@@ -16,7 +16,7 @@ There is a more elaborate use case within the `example` folder, but the basic us
 
 ### Installation
 
-This library requires a preinstalled LLVM-Clang. It was tested with version 11.0.0.
+This library requires a preinstalled LLVM-Clang. It was tested with version 10.0.0 and 11.0.0
 
 To compile and install the library:
 ```
