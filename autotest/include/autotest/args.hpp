@@ -1,6 +1,6 @@
 #pragma once
 
-#include "fuzzer/FuzzedDataProvider.h"
+#include <fuzzer/FuzzedDataProvider.h>
 
 namespace AutoTest
 {

@@ -1,7 +1,7 @@
 #include <vector>
 #include <iostream>
 
-#include "fuzzer/FuzzedDataProvider.h"
+#include <fuzzer/FuzzedDataProvider.h>
 
 #include "autotest/engine.hpp"
 
