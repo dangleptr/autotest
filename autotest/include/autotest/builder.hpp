@@ -1,7 +1,12 @@
 #pragma once
 
+#include <iostream>
+
 #include "engine.hpp"
 #include "methods.hpp"
+
+#define AUTOTEST_FUN(FUN_NAME, ...) .addFunctor([](auto& obj, auto&&... a) { return obj.FUN_NAME(a...); }, ## __VA_ARGS__)
+#define AUTOTEST_CONST_FUN(FUN_NAME, ...) .addFunctor([](const auto& obj, auto&&... a) { return obj.FUN_NAME(a...); }, ## __VA_ARGS__)
 
 namespace AutoTest
 {
@@ -20,29 +25,33 @@ struct Builder
     }
 
     template <class RetT, class... ParamT, class... ArgSpecs>
-    Builder &operator()(RetT(T::*fun)(ParamT...), ArgSpecs... specs)
+    Builder & Const(RetT(T::*fun)(ParamT...) const, ArgSpecs... specs)
     {
+        std::cerr << "fun" << (bool)fun << "\n";
         engine.addMethod(
             makeMethod(
                 instance,
-                fun,
-                specs...));
-        return *this;
-    }
-
-    template <class FunT, class... ArgSpecs>
-    Builder &operator()(FunT fun, ArgSpecs &&... specs)
-    {
-        engine.addMethod(
-            makeMethod(
-                instance,
-                fun,
+                [fun](const auto& obj, auto&&... a) {
+        std::cerr << "funn" <<  (void*)(&obj) << "\n";
+                    return (obj.*fun)(a...);
+                    },
                 specs...));
         return *this;
     }
 
     template <class RetT, class... ParamT, class... ArgSpecs>
-    Builder &Const(RetT(T::*fun)(ParamT...) const , ArgSpecs &&... specs)
+    Builder &operator()(RetT(T::*fun)(ParamT...), ArgSpecs... specs)
+    {
+        engine.addMethod(
+            makeMethod(
+                instance,
+                [fun](auto& obj, auto&&... a) { return (obj.*fun)(a...); },
+                specs...));
+        return *this;
+    }
+
+    template <class FunT, class... ArgSpecs>
+    Builder &addFunctor(FunT fun, ArgSpecs &&... specs)
     {
         engine.addMethod(
             makeMethod(

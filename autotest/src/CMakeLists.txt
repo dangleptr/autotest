@@ -1,5 +1,4 @@
 add_library(autotest
-    "${CMAKE_CURRENT_SOURCE_DIR}/args.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/engine.cpp"
 )
 

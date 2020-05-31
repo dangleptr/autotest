@@ -28,7 +28,7 @@ private:
     template <std::size_t... Indices>
     void executeImpl(std::index_sequence<Indices...>, FuzzedDataProvider &state, T &obj) const
     {
-        (obj.*_fun)(std::get<Indices>(_args)(state)...);
+        _fun(obj, std::get<Indices>(_args)(state)...);
     }
 
     FunT _fun;
