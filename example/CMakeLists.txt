@@ -6,6 +6,8 @@ include_directories(
 
 find_package(autotest REQUIRED)
 
-include(../tests/tests.cmake)
+include(../tools/tests.cmake)
 
-create_test_target(block-array "src/main.cpp")
+create_test_target(block-array "src/block-array-test.cpp")
+
+create_test_target(robin-flat-map "src/robin-hood-test.cpp")
