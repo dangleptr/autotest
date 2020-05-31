@@ -91,10 +91,10 @@ To run the target on the previously generated test cases, add the filenames to t
 $ ./example DIR/TO/STORE/CASES/df9e7e9f6dc5365fbccfc282fe99c2f758d7dd4a DIR/TO/STORE/CASES/a96bf7fc9666fe5a22aaf055edc70a7b1a191cd9...
 ```
 
-Or with command substitution instead of listing the files manually:
+Or:
 
 ```
-$ ./example `ls -dSr DIR/TO/STORE/CASES/*`
+$ ./example DIR/TO/STORE/CASES/*
 ```
 
 ## Enchancements
