@@ -9,7 +9,7 @@ function(create_test_target target_name source )
 
     add_executable("${target_name}-fuzzer" "${source}")
 
-    set_target_properties("${target_name}-fuzzer" PROPERTIES COMPILE_FLAGS "-O0 -fno-omit-frame-pointer ${FUZZER_FLAGS}")
+    set_target_properties("${target_name}-fuzzer" PROPERTIES COMPILE_FLAGS "-Og -fno-omit-frame-pointer ${FUZZER_FLAGS}")
     set_target_properties("${target_name}-fuzzer" PROPERTIES LINK_FLAGS " -fno-omit-frame-pointer ${FUZZER_FLAGS}")
 
     target_compile_features("${target_name}-fuzzer" INTERFACE cxx_std_14)
@@ -17,7 +17,7 @@ function(create_test_target target_name source )
 
     add_executable("${target_name}-coverage" "${source}")
 
-    set_target_properties("${target_name}-coverage" PROPERTIES COMPILE_FLAGS "-O0 -fno-omit-frame-pointer ${COV_FLAGS}")
+    set_target_properties("${target_name}-coverage" PROPERTIES COMPILE_FLAGS "-Og -fno-omit-frame-pointer ${COV_FLAGS}")
     set_target_properties("${target_name}-coverage" PROPERTIES LINK_FLAGS " -fno-omit-frame-pointer ${COV_FLAGS} ")
 
     target_compile_features("${target_name}-coverage" INTERFACE cxx_std_17)

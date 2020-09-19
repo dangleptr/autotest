@@ -1,4 +1,4 @@
 #!/bin/sh
 
-export CC=clang
-export CXX=clang++
+export CC=clang-10
+export CXX=clang++-10

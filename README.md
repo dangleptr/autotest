@@ -59,8 +59,8 @@ The following main.cpp can serve as the testing configuration:
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size) {
     using AutoTest::Args::integral;
     AutoTest::Builder<Baz>{ Data, Size } // forward the fuzzer input
-        AUTOTEST_CONST_FUN(foo) // register a T() const method
-        AUTOTEST_FUN(bar, integral<int>) // register a T(int) method
+        .AUTOTEST_CONST_FUN(foo) // register a T() const method
+        .AUTOTEST_FUN(bar, integral<int>) // register a T(int) method
     .execute(); 
 
     return 0;

@@ -5,8 +5,8 @@
 #include "engine.hpp"
 #include "methods.hpp"
 
-#define AUTOTEST_FUN(FUN_NAME, ...) .addFunctor([](auto& obj, auto&&... a) { return obj.FUN_NAME(a...); }, ## __VA_ARGS__)
-#define AUTOTEST_CONST_FUN(FUN_NAME, ...) .addFunctor([](const auto& obj, auto&&... a) { return obj.FUN_NAME(a...); }, ## __VA_ARGS__)
+#define AUTOTEST_FUN(FUN_NAME, ...) addFunctor([](auto& obj, auto&&... a) { return obj.FUN_NAME(a...); }, ## __VA_ARGS__)
+#define AUTOTEST_CONST_FUN(FUN_NAME, ...) addFunctor([](const auto& obj, auto&&... a) { return obj.FUN_NAME(a...); }, ## __VA_ARGS__)
 
 namespace AutoTest
 {
