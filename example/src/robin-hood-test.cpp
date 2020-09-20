@@ -9,8 +9,8 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
             AutoTest::Args::randomString(20)(state)
         );
     };
-
-    AutoTest::Builder<robin_hood::unordered_flat_map<std::string, std::string>>{ data, size }
+    using hash_map = robin_hood::unordered_flat_map<std::string, std::string>;
+    AutoTest::Interface<hash_map>(data, size)
         .AUTOTEST_FUN(insert, key_val)
         .AUTOTEST_FUN(emplace, key, key)
         .AUTOTEST_CONST_FUN(count, key)

@@ -3,76 +3,56 @@
 #include <functional>
 #include <vector>
 #include <memory>
+#include <type_traits>
 
 #include <fuzzer/FuzzedDataProvider.h>
 
 namespace AutoTest
 {
 
-template <class T, class FunT, class... ArgSpecs>
-struct MethodCall
-{
+struct NoOp {};
 
-    MethodCall(FunT fun, ArgSpecs... specs)
-        : _fun(fun),
-          _args{specs...}
-    {
+template<class T>
+struct Method {
+    virtual void execute(T& obj, FuzzedDataProvider &state) = 0;
+    const char* _name;
+};
+
+template <class T, class FunT, class HookT, class... ArgSpecs>
+struct MethodImpl : Method<T> {
+
+    MethodImpl(const char* name,  FunT&& fun, HookT&& hook,std::tuple<ArgSpecs...>&& args)
+        : _hook{std::move(hook)}, _fun{std::move(fun)}, _args{std::move(args)} {
+        this->_name = name;
     }
 
-    void execute(T &obj, FuzzedDataProvider &state) const
-    {
+    virtual void execute(T& obj, FuzzedDataProvider &state) override {
         executeImpl(std::index_sequence_for<ArgSpecs...>{}, state, obj);
     }
 
 private:
     template <std::size_t... Indices>
-    void executeImpl(std::index_sequence<Indices...>, FuzzedDataProvider &state, T &obj) const
-    {
-        _fun(obj, std::get<Indices>(_args)(state)...);
+    void executeImpl(std::index_sequence<Indices...>, FuzzedDataProvider &state, T &obj) {
+        executeProxy(obj, std::get<Indices>(_args)(state)...);
     }
 
+    template<class... Args>
+    void executeProxy(T& obj, Args&&... args) {
+        if constexpr (std::is_same_v<NoOp, HookT>) {
+            _fun(obj, std::forward<Args>(args)...); 
+        } else if constexpr (!std::is_invocable_v<decltype(_hook(obj, this->_name, args...)), const T&>) {
+            _hook(obj, this->_name, args...);
+            _fun(obj, std::forward<Args>(args)...); 
+        } else {
+            auto postCond = _hook(obj, this->_name, args...);
+            _fun(obj, std::forward<Args>(args)...);
+            assert(postCond(obj) && "post condition not satisfied");
+        }
+    }
+
+    HookT _hook;
     FunT _fun;
     std::tuple<ArgSpecs...> _args;
-};
-
-template <class T, class FunT, class... ArgSpecs>
-auto makeCall(FunT fun, ArgSpecs... specs)
-{
-    return MethodCall<T, FunT, ArgSpecs...>{
-        fun,
-        specs...};
-}
-
-struct Method
-{
-    std::function<void(FuzzedDataProvider &)> call;
-    std::function<bool()> condition;
-};
-
-template <class T, class FunT, class... ArgSpecs>
-Method makeMethod(T &obj, FunT fun, ArgSpecs... specs)
-{
-    return {
-        [call = makeCall<T>(
-         fun,
-             specs...),
-         &obj](FuzzedDataProvider &buffer) {
-            call.execute(obj, buffer);
-        },
-        [] { return true; }};
-};
-
-template <class T, class FunT, class... ArgSpecs>
-Method makeConstMethod(T const &obj, FunT fun, ArgSpecs... specs)
-{
-    return {
-        [call = makeCall<T>(
-             fun,
-             specs...),
-         &obj](FuzzedDataProvider &buffer) {
-            call.execute(obj, buffer);
-        },
-        [] { return true; }};
 };
 
 } // namespace AutoTest

@@ -1,13 +1,13 @@
-add_library(autotest
-    "${CMAKE_CURRENT_SOURCE_DIR}/engine.cpp"
-)
+add_library(autotest)
+
+set_target_properties(autotest PROPERTIES LINKER_LANGUAGE CXX)
 
 add_library(autotest::autotest ALIAS autotest)
 
-target_compile_features(autotest PUBLIC cxx_std_14)
+target_compile_features(autotest PUBLIC cxx_std_17)
 target_compile_options(autotest PRIVATE
-    $<$<CONFIG:Debug>:-O0 -g>
-    $<$<CONFIG:Release>:-O1>
+    $<$<CONFIG:Debug>:-Og -g>
+    $<$<CONFIG:Release>:-O2>
 )
 
 target_include_directories(autotest

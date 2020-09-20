@@ -11,36 +11,31 @@ namespace Args
 {
 
 template <class T>
-T integral(FuzzedDataProvider &state)
-{
+T integral(FuzzedDataProvider &state) {
     return state.ConsumeIntegral<T>();
 }
 
 template <class T>
-auto integralRange(T min, T max)
-{
+auto integralRange(T min, T max) {
     return [min, max](FuzzedDataProvider &state) {
         return state.ConsumeIntegralInRange(min, max);
     };
 }
 
-auto randomString(size_t max_length)
-{
+auto randomString(size_t max_length) {
     return [max_length](FuzzedDataProvider &state) {
         return state.ConsumeRandomLengthString(max_length);
     };
 }
 
-auto fixedString(size_t length)
-{
+auto fixedString(size_t length) {
     return [length](FuzzedDataProvider &state) {
         return state.ConsumeBytesAsString(length);
     };
 }
 
 template <class T>
-T constant(T t)
-{
+T constant(T t) {
     return [t = std::move(t)](FuzzedDataProvider &state) {
         return t;
     };
