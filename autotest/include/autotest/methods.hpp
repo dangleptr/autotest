@@ -14,6 +14,7 @@ struct NoOp {};
 
 template<class T>
 struct Method {
+    virtual ~Method<T>() = default;
     virtual void execute(T& obj, FuzzedDataProvider &state) = 0;
     const char* _name;
 };
